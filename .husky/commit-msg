@@ -1,11 +1,9 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 NC='\033[0m'
 BRed='\033[1;31m'
 
 BRANCH_NAME=$(git symbolic-ref --short HEAD)
 COMMIT_FILE="$1"
+
 SUBJECT=$(sed -n '1p' "$COMMIT_FILE")
 BODY=$(sed -n '2,$p' "$COMMIT_FILE")
 
