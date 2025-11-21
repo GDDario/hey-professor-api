@@ -9,7 +9,7 @@ Route::get('/user', function (Request $request) {
 });
 
 // region Authenticated
-Route::middleware('auth:sanctum')->group(function() {
+Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('question', Question\StoreController::class)->name('questions.store');
 
