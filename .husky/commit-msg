@@ -1,0 +1,30 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+NC='\033[0m'
+BRed='\033[1;31m'
+
+BRANCH_NAME=$(git symbolic-ref --short HEAD)
+COMMIT_FILE="$1"
+SUBJECT=$(sed -n '1p' "$COMMIT_FILE")
+BODY=$(sed -n '2,$p' "$COMMIT_FILE")
+
+BRANCH_NUMBER=$(echo "$BRANCH_NAME" | grep -oE "[0-9]+" | tail -n1)
+
+if ! printf '%s\n' "$SUBJECT" | grep -qE '^(feat|fix|chore|refactor|style|test|docs|perf)(\([a-zA-Z0-9._-]+\))?: .+'; then
+  echo -e "${BRed}Mensagem não segue o padrão Conventional Commits.${NC}"
+  exit 1
+fi
+
+if [ -n "$BRANCH_NUMBER" ]; then
+  if ! printf '%s\n' "$SUBJECT" | grep -qE "#$BRANCH_NUMBER\b"; then
+    SUBJECT="$SUBJECT #$BRANCH_NUMBER"
+  fi
+fi
+
+printf '%s\n' "$SUBJECT" > "$COMMIT_FILE"
+if [ -n "$BODY" ]; then
+  printf '%s\n' "$BODY" >> "$COMMIT_FILE"
+fi
+
+exit 0
